@@ -85,3 +85,19 @@ e.g: named `DevHelloWord`
 Log out form the admin, log into the created user.
 
 You should see the above created Item
+
+## Getting started with Jobs
+
+### Configure a freestyle project Item
+
+* Source Code Management
+* Build Triggers
+- Build periodically (H/15 * * * *)
+- Trigger builds remotely (JENKINS_URL/job/test4/build?token=TOKEN_NAME) (trigger the job remotely)
+* Build --> Execute shell
+
+### Chain job executions
+
+1. Create item1, item2, and item3
+2. In item2 --> configure --> Build Triggers --> Build after other projects are built (item1) --> Post-build Actions --> Build other projects (item3)
+3. Run item1
