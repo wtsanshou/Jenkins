@@ -101,3 +101,148 @@ You should see the above created Item
 1. Create item1, item2, and item3
 2. In item2 --> configure --> Build Triggers --> Build after other projects are built (item1) --> Post-build Actions --> Build other projects (item3)
 3. Run item1
+
+## Integration with GIT
+
+1. Create a project in local
+2. Test it in Jenkins
+
+* Create an Freestyle item
+* Configure execute shell (Linux)
+
+```
+cd /home/sanshou/Workspace/JavaProject1
+javac hello.java
+java hello
+```
+
+* run it and check Console Output
+
+3 Git
+
+```
+git init
+
+git status
+
+git add .
+
+git commit -m "added hello project"
+```
+
+4 Create a project in Github
+
+`https://github.com/wtsanshou/HelloJenkins.git`
+
+5 Push the project to github
+
+```
+git remote add origin https://github.com/wtsanshou/HelloJenkins.git
+
+git push -u origin master
+```
+
+6 Configure Jenkins
+
+require git plugin
+
+Source Code Management --> git
+
+Repository URL: https://github.com/wtsanshou/HelloJenkins.git
+
+Build Triggers --> Poll SCM --> `* * * * *` (every minute for test purpose)
+
+7 Change the project and push to github
+
+8 You will see a new build history.
+
+## Catlight
+
+https://catlight.io
+
+CatLight is a notification app for developers.
+
+It shows the current status of continuous delivery, tasks and bugs in the project and informs when attention is needed 
+
+1. Download Catlight (No version for Ubuntu 16.04)
+2. Install 
+3. Congigure Jenkins URL
+4. Run jobs and receive notification
+
+## Automated Depolyment
+
+Build ---> Deploy ---> Test ---> Release
+
+1. install plugin `Deploy to container Plugin`
+2. Download a war sample file at `https://tomcat.apache.org/tomcat-6.0-doc/appdev/sample/` (you can use your own war file)
+3. Configure username and password for Tomcat
+
+/home/sanshou/Jenkins/apache-tomcat-8.5.20/conf/tomcat-users.xml
+```
+ <user username="deployer" password="deployer" roles="manager-script"/>
+```
+
+4 Configure item
+
+Post-build Actions --> Add post-build action --> Build war/ear to a container
+```
+WAR/EAR files:       **/*.war
+        
+Context path:       sample
+        
+        Credentials: Add the username and passward of tomcat
+        Tomcat URL : http://localhost:8080/     
+```
+
+5 Verify it in tomcat
+
+`http://localhost:8080/sample/`
+
+You should see `Sample "Hello, World" Application` page
+
+## Send Notification
+
+* Manage Jenkins --> Configure System --> E-mail Notification
+
+```
+SMTP server: smtp.gmail.com     ## https://www.arclab.com/en/kb/email/list-of-smtp-and-pop3-servers-mailserver-list.html
+
+Use SMTP Authentication 
+        
+    User Name : weitaoie@gmail.com      
+        
+    Password  : ************      
+        
+    Use SSL     
+                
+    SMTP Port    465  ## Connect to smtp.gmail.com on port 465, if you're using SSL. (Connect on port 587 if you're using TLS.   
+        
+Test configuration by sending test e-mail :    weitaoie@gmail.com  
+                
+Email was successfully sent
+```
+
+**Note:** enable Gmail `Allow less secure apps: ON`
+
+* set a notification for an item
+
+A project --> configure --> Post-build Actions --> E-mail notification
+
+```
+    Recipients  : weitaoie@gmail.com    
+        
+    ##Whitespace-separated list of recipient addresses. May reference build parameters like $PARAM. E-mail will be sent when a build fails, becomes unstable or returns to stable.    
+        
+        Send e-mail for every unstable build
+
+```
+
+run a unstable build and check the email
+
+
+### Another plugins
+
+* Notification Plugin: sending job status notifications in JSON and XML formats
+* Extreme Notification Plugin: send web hook
+* Email-ext plugin:  
+
